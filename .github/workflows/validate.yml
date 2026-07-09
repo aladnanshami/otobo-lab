@@ -19,3 +19,4 @@ jobs:
           sh -n scripts/healthcheck.sh
           sh -n scripts/backup-db.sh
           sh -n scripts/restore-db.sh
+          sh -n scripts/cleanup-backups.sh

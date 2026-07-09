@@ -1,4 +1,4 @@
-.PHONY: up down restart logs status health backup restore config clean
+.PHONY: up down restart logs status health backup restore prune config clean
 
 up:
 	docker compose up -d
@@ -22,6 +22,9 @@ backup:
 
 restore:
 	./scripts/restore-db.sh
+
+prune:
+	./scripts/cleanup-backups.sh
 
 config:
 	docker compose config

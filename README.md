@@ -12,6 +12,8 @@ I use this as a simple place to test OTOBO setup steps and keep the commands I n
 - Make targets for common operations
 - Health check script
 - Database backup and restore scripts
+- Backup cleanup script
+- Architecture, security, and maintenance notes
 - GitHub Actions validation for Compose and shell scripts
 
 ## Requirements
@@ -47,6 +49,7 @@ make status      # Show container status
 make health      # Check HTTP endpoint
 make backup      # Create database backup in backups/
 make restore     # Restore BACKUP=backups/file.sql.gz
+make prune       # Remove old backups, default older than 14 days
 make clean       # Stop and remove volumes
 ```
 
@@ -71,10 +74,14 @@ Passwords live in `.env`, which is ignored by git.
 ├── Makefile
 ├── scripts/
 │   ├── backup-db.sh
+│   ├── cleanup-backups.sh
 │   ├── healthcheck.sh
 │   └── restore-db.sh
 └── docs/
+    ├── architecture.md
+    ├── maintenance.md
     ├── operations.md
+    ├── security.md
     └── troubleshooting.md
 ```
 
