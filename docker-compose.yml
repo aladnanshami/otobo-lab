@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mariadb:10.11
+    container_name: otobo-lab-db
+    command:
+      - --max-allowed-packet=256M
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-otobo}
+      MYSQL_USER: ${MYSQL_USER:-otobo}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me-otobo}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-me-root}
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - otobo-net
+
+  otobo:
+    image: ${OTOBO_IMAGE:-rotheross/otobo:latest}
+    container_name: otobo-lab-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      OTOBO_DB_HOST: db
+      OTOBO_DB_NAME: ${MYSQL_DATABASE:-otobo}
+      OTOBO_DB_USER: ${MYSQL_USER:-otobo}
+      OTOBO_DB_PASSWORD: ${MYSQL_PASSWORD:-change-me-otobo}
+    ports:
+      - "${OTOBO_HTTP_PORT:-8080}:80"
+    volumes:
+      - otobo-data:/opt/otobo
+    networks:
+      - otobo-net
+
+volumes:
+  db-data:
+  otobo-data:
+
+networks:
+  otobo-net:
+    name: otobo-lab-net
